@@ -1,0 +1,25 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Logs & temp
+*.log
+*.tmp
+
+# SSH deploy keys — NEVER commit these
+deploy_key
+deploy_key.pub
+id_ed25519*
+id_rsa*
+*.pem
+
+# Local env
+.env
+.env.*

@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------
+# Aa OS portfolio — nginx server block (static site).
+#
+# On the VPS:
+#   sudo cp nginx.conf.example /etc/nginx/sites-available/portfolio
+#   # edit YOUR_DOMAIN below
+#   sudo ln -s /etc/nginx/sites-available/portfolio /etc/nginx/sites-enabled/
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# Then add HTTPS (after the domain's DNS points at this server):
+#   sudo certbot --nginx -d YOUR_DOMAIN -d www.YOUR_DOMAIN
+# certbot rewrites this file to add the :443 block + an HTTP->HTTPS redirect.
+# ---------------------------------------------------------------
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name YOUR_DOMAIN www.YOUR_DOMAIN;
+
+    # Must match the VPS_DEPLOY_PATH repo secret used by the deploy workflow.
+    root /var/www/portfolio;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Cache static assets modestly; raise this once the site is stable.
+    location ~* \.(css|js|woff2?|png|jpe?g|svg|ico|pdf)$ {
+        expires 1h;
+    }
+
+    # Light security headers.
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    access_log /var/log/nginx/portfolio.access.log;
+    error_log  /var/log/nginx/portfolio.error.log;
+}

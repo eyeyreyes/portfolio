@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aa OS — Aa Reyes, AI-Augmented Software Engineer</title>
+<meta name="description" content="The portfolio of Aa Reyes, a full-stack / AI-augmented software engineer who ships production SaaS with agentic AI workflows. Presented as an interactive desktop OS." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     EDIT YOUR CONTACT LINKS: search "EDIT CONTACT LINKS" below,
+     inside <template id="tpl-contact">.
+     ============================================================ -->
+
+<!-- ===================== BOOT SCREEN ===================== -->
+<div class="boot" id="boot">
+  <div class="boot__logo">Aa<span>OS</span></div>
+  <pre class="boot__log" id="bootLog"></pre>
+  <div class="boot__hint">click anywhere to skip</div>
+</div>
+
+<!-- ===================== MENU BAR ===================== -->
+<header class="menubar" id="menubar">
+  <div class="menubar__left">
+    <span class="menubar__logo">Aa<b>OS</b></span>
+    <span class="menubar__sep">·</span>
+    <span class="menubar__app" id="menubarApp">Finder</span>
+    <span class="menubar__hint">Aa Reyes — AI-Augmented Software Engineer</span>
+  </div>
+  <div class="menubar__right">
+    <button class="menubar__btn" id="plainViewBtn" title="Switch to a plain, scrollable view">▤ Plain view</button>
+    <span class="menubar__clock" id="clock">--:--</span>
+  </div>
+</header>
+
+<!-- ===================== DESKTOP ===================== -->
+<main class="desktop" id="desktop" aria-label="Desktop">
+  <div class="desktop__bg" aria-hidden="true">
+    <div class="desktop__blob desktop__blob--1"></div>
+    <div class="desktop__blob desktop__blob--2"></div>
+    <div class="desktop__grid"></div>
+  </div>
+
+  <div class="desktop__icons" id="desktopIcons">
+    <button class="dicon" data-app="about"><span class="dicon__img">i</span><span class="dicon__label">About&nbsp;Me</span></button>
+    <button class="dicon" data-app="projects"><span class="dicon__img">▤</span><span class="dicon__label">Projects</span></button>
+    <button class="dicon" data-app="agents"><span class="dicon__img">◇</span><span class="dicon__label">Agent&nbsp;Crew</span></button>
+    <button class="dicon" data-app="terminal"><span class="dicon__img">$_</span><span class="dicon__label">Terminal</span></button>
+    <button class="dicon" data-app="game"><span class="dicon__img">✦</span><span class="dicon__label">Glyph&nbsp;Quest</span></button>
+  </div>
+
+  <div class="desktop__windows" id="windows"></div>
+
+  <div class="desktop__tip" id="desktopTip">
+    Tip: drag windows by their title bar · open apps from the dock below
+  </div>
+</main>
+
+<!-- ===================== DOCK ===================== -->
+<nav class="dock" id="dock" aria-label="Dock">
+  <button class="dock__item" data-app="about" title="About"><span>i</span></button>
+  <button class="dock__item" data-app="projects" title="Projects"><span>▤</span></button>
+  <button class="dock__item" data-app="agents" title="Agent Crew"><span>◇</span></button>
+  <button class="dock__item" data-app="terminal" title="Terminal"><span>$_</span></button>
+  <button class="dock__item" data-app="stack" title="Tech Stack"><span>▦</span></button>
+  <button class="dock__item" data-app="contact" title="Contact"><span>@</span></button>
+  <button class="dock__item" data-app="game" title="Glyph Quest — mini-RPG"><span>✦</span></button>
+</nav>
+
+<!-- ===================== PLAIN / MOBILE STACKED VIEW ===================== -->
+<div class="stacked" id="stacked" hidden>
+  <header class="stacked__bar">
+    <span class="stacked__logo">Aa<b>OS</b></span>
+    <button class="stacked__back" id="stackedBack" hidden>← Back to Aa OS</button>
+  </header>
+  <div class="stacked__body" id="stackedBody"></div>
+</div>
+
+<!-- ============================================================
+     WINDOW CONTENT TEMPLATES
+     ============================================================ -->
+
+<!-- ABOUT -->
+<template id="tpl-about">
+  <div class="pane about">
+    <div class="about__head">
+      <div class="about__mono">Aa</div>
+      <div>
+        <h1 class="about__name">Aa Reyes</h1>
+        <p class="about__title">AI-Augmented Software Engineer · Full-Stack</p>
+        <span class="badge"><span class="badge__dot"></span>Open to remote engineering roles</span>
+      </div>
+    </div>
+    <div class="about__body">
+      <p>I'm a full-stack engineer in <strong>Manila, Philippines</strong> with 7+ years
+      building production software end-to-end. By day I'm the solo IT head of a 100-person
+      customs brokerage, where I designed, built, and still run an enterprise logistics
+      platform. By night I run a <strong>one-person software studio</strong> — shipping
+      multi-tenant SaaS products with agentic AI workflows.</p>
+      <p>Claude Code is my daily driver. My edge isn't only writing code — it's
+      <strong>orchestrating a 16-agent specialist crew</strong> under a strict
+      orchestrator-coordinator architecture to design, build, review, and ship at the
+      velocity of a full engineering team.</p>
+      <p>I'm looking for a remote role where agentic software engineering <em>is</em> the
+      work — building real products, not just talking about AI.</p>
+    </div>
+    <div class="metrics">
+      <div class="metric"><div class="metric__num" data-count="7" data-suffix="+">0</div><div class="metric__label">Years engineering</div></div>
+      <div class="metric"><div class="metric__num" data-count="4" data-suffix="">0</div><div class="metric__label">Production systems</div></div>
+      <div class="metric"><div class="metric__num" data-count="16" data-suffix="">0</div><div class="metric__label">AI agents orchestrated</div></div>
+      <div class="metric"><div class="metric__num" data-count="100" data-suffix="+">0</div><div class="metric__label">Daily platform users</div></div>
+    </div>
+    <ul class="facts">
+      <li><span>Role</span><strong>Full-Stack / AI-Augmented SWE</strong></li>
+      <li><span>Based</span><strong>Manila, PH · UTC+8</strong></li>
+      <li><span>Mode</span><strong>Remote-first · async-friendly</strong></li>
+      <li><span>Core stack</span><strong>C# .NET · Node/TS · React · PostgreSQL</strong></li>
+      <li><span>Edge</span><strong>Multi-agent Claude Code orchestration</strong></li>
+    </ul>
+    <button class="btn btn--primary" data-open="projects">Browse projects →</button>
+  </div>
+</template>
+
+<!-- PROJECTS (finder: list + detail) -->
+<template id="tpl-projects">
+  <div class="finder">
+    <aside class="finder__list" role="tablist">
+      <div class="finder__group">Venture — one-person software studio</div>
+      <button class="finder__item" data-proj="aasaas"><strong>Aa-SaaS Studio</strong><span>Multi-tenant vertical SaaS</span></button>
+      <button class="finder__item" data-proj="wwe"><strong>WWE System</strong><span>Logistics ERP</span></button>
+      <button class="finder__item" data-proj="content"><strong>Content Pipeline</strong><span>Autonomous AI media SaaS</span></button>
+      <div class="finder__group">Flagship — employer platform</div>
+      <button class="finder__item" data-proj="rarr"><strong>RARR Platform</strong><span>Enterprise logistics, in production</span></button>
+      <div class="finder__group">Earlier wins</div>
+      <button class="finder__item" data-proj="lcl"><strong>LCL Truck Scheduling</strong><span>Process automation</span></button>
+      <button class="finder__item" data-proj="hscode"><strong>HS Code Engine</strong><span>28× performance win</span></button>
+    </aside>
+    <div class="finder__detail">
+
+      <article class="proj" data-proj="aasaas">
+        <div class="proj__tag proj__tag--venture">Venture · Phase 5 — demo-ready</div>
+        <h2>Aa-SaaS Studio</h2>
+        <p class="proj__lead">A multi-tenant vertical-SaaS platform: a unified Layer-1 core
+        with pluggable industry modules (salon, payroll, dental) — productizing the same
+        engineering once and selling it many times.</p>
+        <div class="proj__stats">
+          <div><strong>227+</strong><span>automated tests</span></div>
+          <div><strong>Multi-tenant</strong><span>row-level security</span></div>
+          <div><strong>Live tenants</strong><span>salon module</span></div>
+        </div>
+        <ul class="proj__list">
+          <li>Node.js 22 + TypeScript, Apollo Server 4 GraphQL API, Express 4</li>
+          <li>Prisma 5 + PostgreSQL 16 — tenant isolation via row-level security &amp; audit logging</li>
+          <li>React 18 + Vite + Tailwind + Hero UI; pnpm monorepo workspaces</li>
+          <li>Salon module live with real tenant data — booking validation, PH payroll computation, Twilio SMS hooks</li>
+        </ul>
+        <div class="chips"><span>TypeScript</span><span>Apollo / GraphQL</span><span>Prisma</span><span>PostgreSQL 16</span><span>React</span><span>Tailwind</span><span>multi-tenant</span></div>
+      </article>
+
+      <article class="proj" data-proj="wwe" hidden>
+        <div class="proj__tag proj__tag--venture">Venture · In active development</div>
+        <h2>WWE System</h2>
+        <p class="proj__lead">An operations platform for domestic trucking and 3PL —
+        quotations, shipment tracking, fleet, billing, customs clearance and freight
+        forwarding in one ERP.</p>
+        <div class="proj__stats">
+          <div><strong>28</strong><span>Prisma models</span></div>
+          <div><strong>42</strong><span>frontend pages</span></div>
+          <div><strong>103+</strong><span>unit tests</span></div>
+        </div>
+        <ul class="proj__list">
+          <li>React 19.2 + Vite 8 + Hero UI v3 + Apollo Client 3.14</li>
+          <li>Node.js 20 + Apollo Server 5 + Express 4; Prisma 6.19 + PostgreSQL 16</li>
+          <li>8-state ForwardingQuotation state machine, FX-rate snapshots, 3-tier VAT</li>
+          <li>11 GraphQL resolvers, vendor consolidation, soft-delete &amp; audit trails</li>
+        </ul>
+        <div class="chips"><span>React 19</span><span>Apollo Server 5</span><span>GraphQL</span><span>Prisma 6</span><span>PostgreSQL 16</span><span>state machines</span></div>
+      </article>
+
+      <article class="proj" data-proj="content" hidden>
+        <div class="proj__tag proj__tag--venture">Venture · Phase 0 — shipping first videos</div>
+        <h2>Content Creation Pipeline</h2>
+        <p class="proj__lead">An autonomous AI system that produces faceless short-form
+        video — science and storytelling niches — from script to published Reel, with no
+        human in the render loop.</p>
+        <div class="proj__stats">
+          <div><strong>12-agent</strong><span>two-layer system</span></div>
+          <div><strong>End-to-end</strong><span>script → publish</span></div>
+          <div><strong>$5K/mo</strong><span>revenue target</span></div>
+        </div>
+        <ul class="proj__list">
+          <li>Claude Code multi-agent orchestration drives the whole pipeline</li>
+          <li>Remotion 4 + FFmpeg video assembly; Piper TTS narration</li>
+          <li>Public-domain visuals (NASA / ESA archives); Publora + Meta Graph API publishing</li>
+          <li>Proof that agentic workflows can run a product, not just assist a developer</li>
+        </ul>
+        <div class="chips"><span>Claude Code</span><span>agent orchestration</span><span>Remotion</span><span>FFmpeg</span><span>Piper TTS</span><span>Meta Graph API</span></div>
+      </article>
+
+      <article class="proj" data-proj="rarr" hidden>
+        <div class="proj__tag">Flagship · In production — ~100 daily users</div>
+        <h2>RARR Logistics Platform</h2>
+        <p class="proj__lead">An enterprise logistics web platform for a customs brokerage —
+        Shopee e-commerce integration, order management, customs processing and
+        freight-forwarding quotation. Designed, built, deployed and maintained entirely
+        solo over 11 months.</p>
+        <div class="proj__stats">
+          <div><strong>143+</strong><span>features shipped</span></div>
+          <div><strong>11 mo</strong><span>solo build</span></div>
+          <div><strong>5</strong><span>CI/CD pipelines</span></div>
+        </div>
+        <ul class="proj__list">
+          <li>Angular 20 front end — 56 components, 30+ services, PWA-enabled</li>
+          <li>ASP.NET Core 9 API — 22+ controllers, 15+ domain services, JWT auth</li>
+          <li>PostgreSQL — 44 tables, 39 EF Core migrations</li>
+          <li>Mobile PWA scanner: Quagga2 barcode + Tesseract.js OCR, SignalR real-time events</li>
+        </ul>
+        <div class="chips"><span>Angular 20</span><span>ASP.NET Core 9</span><span>C#</span><span>PostgreSQL</span><span>EF Core</span><span>SignalR</span><span>GitHub Actions</span></div>
+      </article>
+
+      <article class="proj" data-proj="lcl" hidden>
+        <div class="proj__tag">Automation · Running in production</div>
+        <h2>LCL Truck Scheduling System</h2>
+        <p class="proj__lead">Replaced manual whiteboard truck scheduling across three
+        brokerages with an automated system — 5-position unified rotation, per-company skip
+        counts, split jobs and PEZA-zone overrides.</p>
+        <ul class="proj__list">
+          <li>Designed complex rotation logic within Power Automate's 8-level nesting limit</li>
+          <li>Debugged with AI — every flow trace grounded in real JSON, never simulation</li>
+          <li>Clean, re-importable patches for safe live production fixes</li>
+        </ul>
+        <div class="chips"><span>Power Automate</span><span>Power Apps</span><span>SharePoint</span></div>
+      </article>
+
+      <article class="proj" data-proj="hscode" hidden>
+        <div class="proj__tag">Performance · 28× faster</div>
+        <h2>HS Code Classification Engine</h2>
+        <p class="proj__lead">A customs HS-code batch classifier that blocked declarations
+        every morning at 276 seconds. Profiled it, found per-cell I/O as the bottleneck, and
+        rebuilt it on array-based group processing.</p>
+        <div class="proj__stats proj__stats--inline">
+          <div><strong>276s → &lt;10s</strong><span>runtime</span></div>
+          <div><strong>28×</strong><span>faster</span></div>
+        </div>
+        <ul class="proj__list">
+          <li>Profiled cell-by-cell operations over a 10,000+ row reference database</li>
+          <li>Lesson carried forward: most performance problems are I/O patterns, not compute</li>
+        </ul>
+        <div class="chips"><span>VBA</span><span>Excel</span><span>Profiling</span></div>
+      </article>
+
+    </div>
+  </div>
+</template>
+
+<!-- TERMINAL -->
+<template id="tpl-terminal">
+  <div class="term">
+    <div class="term__out" id="termOut"></div>
+    <label class="term__line">
+      <span class="term__ps">aa@portfolio<b>:</b>~$</span>
+      <input class="term__input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal input" />
+    </label>
+  </div>
+</template>
+
+<!-- AGENTS -->
+<template id="tpl-agents">
+  <div class="pane">
+    <p class="pane__lead">I don't use AI as autocomplete. I run a specialist crew with a
+    strict orchestrator-coordinator pattern: one orchestrator coordinates and delegates —
+    it never implements directly — while tiered specialists plan, build, review and
+    document. Models are matched to the job. <strong>Click any agent.</strong></p>
+    <div class="crew">
+      <div class="crew__diagram">
+        <div class="crew__orchestrator js-orch"></div>
+        <div class="crew__connector" aria-hidden="true"></div>
+        <div class="crew__tiers js-tiers"></div>
+      </div>
+      <aside class="crew__detail js-detail" aria-live="polite"></aside>
+    </div>
+    <div class="principles">
+      <div class="principle"><div class="principle__icon">◇</div><h4>Model-tiered</h4><p>Opus for orchestration, planning &amp; security reasoning. Sonnet for implementation. Haiku for fast doc sync.</p></div>
+      <div class="principle"><div class="principle__icon">▣</div><h4>Read-only reviewers</h4><p>The security-auditor and code-reviewer have no write access — they report, never silently edit.</p></div>
+      <div class="principle"><div class="principle__icon">⛁</div><h4>Per-agent memory</h4><p>Every agent carries its own scoped memory file, seeded with project context.</p></div>
+      <div class="principle"><div class="principle__icon">⚷</div><h4>Guard-railed</h4><p>Permission deny-lists block destructive ops. AI output is verified against real artifacts.</p></div>
+    </div>
+  </div>
+</template>
+
+<!-- STACK -->
+<template id="tpl-stack">
+  <div class="pane">
+    <p class="pane__lead">What I build with — across two production stacks (.NET and
+    Node/TypeScript) and an agentic AI engineering layer on top.</p>
+    <div class="stackgrid">
+      <div class="stackgroup"><h3>Backend &amp; APIs</h3><div class="chips"><span>C# / .NET Core 9</span><span>ASP.NET Core</span><span>EF Core</span><span>Node.js</span><span>Apollo Server</span><span>GraphQL</span><span>SignalR</span></div></div>
+      <div class="stackgroup"><h3>Frontend</h3><div class="chips"><span>Angular 20</span><span>React 18 / 19</span><span>TypeScript</span><span>Vite</span><span>Tailwind</span><span>Hero UI</span></div></div>
+      <div class="stackgroup"><h3>Data</h3><div class="chips"><span>PostgreSQL 16</span><span>Prisma</span><span>EF Core</span><span>Row-level security</span><span>SQL</span></div></div>
+      <div class="stackgroup"><h3>DevOps &amp; Infra</h3><div class="chips"><span>GitHub Actions</span><span>Ubuntu VPS</span><span>nginx</span><span>Docker</span><span>pnpm workspaces</span></div></div>
+      <div class="stackgroup stackgroup--accent"><h3>AI Engineering</h3><div class="chips"><span>Claude Code</span><span>Multi-agent orchestration</span><span>MCP servers</span><span>Remotion / Piper</span><span>Context engineering</span></div></div>
+      <div class="stackgroup"><h3>Microsoft Platform</h3><div class="chips"><span>Power Apps</span><span>Power Automate</span><span>Power BI</span><span>PowerShell</span><span>VBA</span></div></div>
+    </div>
+  </div>
+</template>
+
+<!-- CONTACT -->
+<template id="tpl-contact">
+  <div class="pane contact">
+    <h2 class="contact__title">Let's build something with agents.</h2>
+    <p class="pane__lead">Open to remote, full-time roles where AI-augmented software
+    engineering is the day-to-day work. Backend, full-stack, or AI engineering.</p>
+    <!-- ============================================================
+         EDIT CONTACT LINKS HERE — replace the href values below.
+         For the CV: drop your CV into this folder and point at it,
+         e.g. href="Aa-Reyes-CV.pdf"
+         ============================================================ -->
+    <div class="contact__links">
+      <a class="contact__link" href="mailto:aa@atr-rarr.ph">
+        <span class="contact__ic">✉</span><span><strong>Email</strong>aa@atr-rarr.ph</span></a>
+      <a class="contact__link" href="https://github.com/your-username" target="_blank" rel="noopener">
+        <span class="contact__ic">▤</span><span><strong>GitHub</strong>github.com/your-username</span></a>
+      <a class="contact__link" href="https://www.linkedin.com/in/your-handle" target="_blank" rel="noopener">
+        <span class="contact__ic">in</span><span><strong>LinkedIn</strong>linkedin.com/in/your-handle</span></a>
+      <a class="contact__link contact__link--cv" href="Aa-Reyes-CV.pdf" target="_blank" rel="noopener">
+        <span class="contact__ic">⬇</span><span><strong>Curriculum Vitae</strong>Download PDF</span></a>
+    </div>
+    <p class="contact__meta">Manila, Philippines · UTC+8 · Remote-first</p>
+  </div>
+</template>
+
+<!-- GAME -->
+<template id="tpl-game">
+  <div class="game"><canvas class="game__canvas" width="480" height="360"></canvas></div>
+</template>
+
+<script src="game.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
