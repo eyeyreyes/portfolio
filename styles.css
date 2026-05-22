@@ -391,6 +391,29 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
 }
 .proj__list li::before { content: '▹'; position: absolute; left: 0; color: var(--accent-2); }
 
+/* project screenshots + lightbox */
+.proj__shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.proj__shots .shot { margin: 0; }
+.proj__shots img {
+  width: 100%; display: block; border-radius: 9px;
+  border: 1px solid var(--border-2); background: #0a0b10; cursor: zoom-in;
+  transition: border-color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.proj__shots img:hover { border-color: var(--accent); transform: translateY(-2px); }
+.proj__shots figcaption { font-size: 0.74rem; color: var(--text-mute); margin-top: 7px; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 10001;
+  background: rgba(5, 6, 10, 0.93);
+  display: none; place-items: center; padding: 4vh 4vw; cursor: zoom-out;
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+.lightbox.open { display: grid; }
+.lightbox img {
+  max-width: 100%; max-height: 92vh; border-radius: 10px;
+  border: 1px solid var(--border-2); box-shadow: 0 30px 90px -20px #000;
+}
+@media (max-width: 720px) { .proj__shots { grid-template-columns: 1fr; } }
+
 /* ---------- TERMINAL ---------- */
 .term {
   display: flex; flex-direction: column; height: 100%; min-height: 320px;

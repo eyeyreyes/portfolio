@@ -538,3 +538,21 @@
 
   runBoot(start);
 })();
+
+/* ---------- Project screenshot lightbox ---------- */
+(function () {
+  var lb = document.createElement('div');
+  lb.className = 'lightbox';
+  lb.innerHTML = '<img alt="Screenshot enlarged" />';
+  document.body.appendChild(lb);
+  lb.addEventListener('click', function () { lb.classList.remove('open'); });
+  document.addEventListener('click', function (e) {
+    var img = e.target.closest ? e.target.closest('.proj__shots img') : null;
+    if (!img) return;
+    lb.firstChild.src = img.src;
+    lb.classList.add('open');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
