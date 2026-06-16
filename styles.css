@@ -418,9 +418,8 @@ button { font-family: inherit; cursor: pointer; border: 0; background: none; col
    Augmentations — Pass A + Pass B
    ============================================================ */
 
-/* mobile quick-contact in About (mobile/stacked only) */
-.about__quick { display: none; gap: 10px; margin-bottom: 18px; }
-@media (max-width: 760px) { .about__quick { display: grid; grid-template-columns: 1fr 1fr; } }
+/* quick-contact in About (desktop OS window AND mobile/stacked view) */
+.about__quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
 @media (max-width: 480px) { .about__quick { grid-template-columns: 1fr; } }
 .about__quick-btn {
   display: flex; align-items: center; gap: 11px;

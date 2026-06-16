@@ -217,6 +217,18 @@
       animateCounters(root);
       var b = $('[data-open]', root);
       if (b) b.addEventListener('click', function () { openApp(b.getAttribute('data-open')); });
+      // Quick-contact buttons: desktop -> open Contact window; stacked/mobile -> #msgform anchor scrolls
+      root.querySelectorAll('.about__quick-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          if (document.body.classList.contains('is-stacked')) return;
+          e.preventDefault();
+          openApp('contact');
+          setTimeout(function () {
+            var msg = document.querySelector('.win .msgform');
+            if (msg) msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+        });
+      });
     } else if (id === 'projects') {
       initFinder(root);
     } else if (id === 'terminal') {
