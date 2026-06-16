@@ -116,7 +116,7 @@
     setMenubarApp(APPS[id].title.split(' — ')[0]);
   }
 
-  function openApp(id) {
+  function openApp(id, posOverride) {
     var app = APPS[id];
     if (!app) return;
 
@@ -128,11 +128,17 @@
 
     var area = document.getElementById('windows');
     var availW = area.clientWidth, availH = area.clientHeight;
-    var w = Math.min(app.w, availW - 24);
-    var h = Math.min(app.h, availH - 24);
-    var x = clamp(Math.round((availW - w) / 2) - 80 + cascade, 12, Math.max(12, availW - w - 12));
-    var y = clamp(Math.round((availH - h) / 2) - 30 + cascade, 10, Math.max(10, availH - h - 12));
-    cascade = (cascade + 28) % 140;
+    var w, h, x, y;
+    if (posOverride) {
+      w = posOverride.w; h = posOverride.h;
+      x = posOverride.x; y = posOverride.y;
+    } else {
+      w = Math.min(app.w, availW - 24);
+      h = Math.min(app.h, availH - 24);
+      x = clamp(Math.round((availW - w) / 2) - 80 + cascade, 12, Math.max(12, availW - w - 12));
+      y = clamp(Math.round((availH - h) / 2) - 30 + cascade, 10, Math.max(10, availH - h - 12));
+      cascade = (cascade + 28) % 140;
+    }
 
     var el = document.createElement('section');
     el.className = 'win';
@@ -706,8 +712,27 @@
     }
     startClock();
     wireLaunchers();
-    openApp('contact');  // open first so About ends up focused on top
-    openApp('about');
+
+    // Auto-open About + Contact side-by-side, clear of the desktop icons and the dock
+    var area = document.getElementById('windows');
+    var LEFT_GUTTER = 130;   // clear the desktop icon column
+    var RIGHT_MARGIN = 18;
+    var TOP_MARGIN = 22;
+    var BOTTOM_MARGIN = 92;  // clear the dock
+    var GAP = 16;
+    var availW = area.clientWidth - LEFT_GUTTER - RIGHT_MARGIN;
+    var availH = area.clientHeight - TOP_MARGIN - BOTTOM_MARGIN;
+    if (availW >= 780 && availH >= 460) {
+      var winW = Math.floor((availW - GAP) / 2);
+      var winH = Math.min(availH, 720);
+      // Open Contact first so About lands focused on top, both tiled side-by-side
+      openApp('contact', { x: LEFT_GUTTER + winW + GAP, y: TOP_MARGIN, w: winW, h: winH });
+      openApp('about',   { x: LEFT_GUTTER,             y: TOP_MARGIN, w: winW, h: winH });
+    } else {
+      // Narrow desktop — fall back to default cascade
+      openApp('contact');
+      openApp('about');
+    }
     setTimeout(hideTip, 9000);
   }
 
