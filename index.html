@@ -8,6 +8,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://eyeyreyes.dev/" />
+<meta property="og:title" content="Aa Reyes — AI-Augmented Senior Software Engineer" />
+<meta property="og:description" content="Full-stack engineer who ships production SaaS with multi-agent Claude Code workflows. Portfolio presented as an interactive desktop OS." />
+<meta property="og:image" content="https://eyeyreyes.dev/assets/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Aa Reyes — AI-Augmented Senior Software Engineer" />
+<meta name="twitter:description" content="Full-stack engineer who ships production SaaS with multi-agent Claude Code workflows." />
+<meta name="twitter:image" content="https://eyeyreyes.dev/assets/og-image.png" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -88,6 +100,16 @@
 <!-- ABOUT -->
 <template id="tpl-about">
   <div class="pane about">
+    <div class="about__quick" aria-label="Quick contact">
+      <a class="about__quick-btn" href="#msgform">
+        <span class="about__quick-ic">✉</span>
+        <span class="about__quick-text"><strong>Email me</strong><span>aajreyes1996@gmail.com</span></span>
+      </a>
+      <a class="about__quick-btn" href="#msgform">
+        <span class="about__quick-ic">☎</span>
+        <span class="about__quick-text"><strong>Call</strong><span>+63 956 922 6033</span></span>
+      </a>
+    </div>
     <div class="about__head">
       <div class="about__mono">Aa</div>
       <div>
@@ -161,6 +183,7 @@
           <li>React 18 + Vite + Tailwind + Hero UI; pnpm monorepo workspaces</li>
           <li>Salon module live with real tenant data — booking validation, PH payroll computation, Twilio SMS hooks</li>
         </ul>
+        <a class="proj__visit" href="https://aisyslabs.tech" target="_blank" rel="noopener">Visit aisyslabs.tech →</a>
         <div class="chips"><span>TypeScript</span><span>Apollo / GraphQL</span><span>Prisma</span><span>PostgreSQL 16</span><span>React</span><span>Tailwind</span><span>multi-tenant</span></div>
       </article>
 
@@ -297,10 +320,8 @@
 <!-- AGENTS -->
 <template id="tpl-agents">
   <div class="pane">
-    <p class="pane__lead">I don't use AI as autocomplete. I run a specialist crew with a
-    strict orchestrator-coordinator pattern: one orchestrator coordinates and delegates —
-    it never implements directly — while tiered specialists plan, build, review and
-    document. Models are matched to the job. <strong>Click any agent.</strong></p>
+    <div class="crew__tabs js-tabs" role="tablist" aria-label="Select project crew"></div>
+    <p class="pane__lead js-lead"></p>
     <div class="crew">
       <div class="crew__diagram">
         <div class="crew__orchestrator js-orch"></div>
@@ -310,8 +331,8 @@
       <aside class="crew__detail js-detail" aria-live="polite"></aside>
     </div>
     <div class="principles">
-      <div class="principle"><div class="principle__icon">◇</div><h4>Model-tiered</h4><p>Opus for orchestration, planning &amp; security reasoning. Sonnet for implementation. Haiku for fast doc sync.</p></div>
-      <div class="principle"><div class="principle__icon">▣</div><h4>Read-only reviewers</h4><p>The security-auditor and code-reviewer have no write access — they report, never silently edit.</p></div>
+      <div class="principle"><div class="principle__icon">◇</div><h4>Model-tiered</h4><p>Opus for orchestration, planning &amp; deep reasoning. Sonnet for implementation. Haiku for fast doc sync.</p></div>
+      <div class="principle"><div class="principle__icon">▣</div><h4>Read-only reviewers</h4><p>Planners, verifiers and reviewers have no write access — they report, never silently edit.</p></div>
       <div class="principle"><div class="principle__icon">⛁</div><h4>Per-agent memory</h4><p>Every agent carries its own scoped memory file, seeded with project context.</p></div>
       <div class="principle"><div class="principle__icon">⚷</div><h4>Guard-railed</h4><p>Permission deny-lists block destructive ops. AI output is verified against real artifacts.</p></div>
     </div>
@@ -349,6 +370,20 @@
         <span class="contact__ic">in</span><span><strong>LinkedIn</strong>linkedin.com/in/aajreyes</span></a>
       <a class="contact__link contact__link--cv" href="Alfred_Anthony_Reyes_CV.pdf" target="_blank" rel="noopener">
         <span class="contact__ic">⬇</span><span><strong>Curriculum Vitae</strong>Download PDF</span></a>
+    </div>
+    <div class="msgform" id="msgform">
+      <h3 class="msgform__title">Send me a message</h3>
+      <p class="msgform__lead">It lands straight in my inbox — faster than email.</p>
+      <form class="msgform__form" novalidate>
+        <input class="msgform__hp" type="text" name="_hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="msgform__row">
+          <label class="msgform__field"><span>Your name</span><input type="text" name="name" required maxlength="200" autocomplete="name" /></label>
+          <label class="msgform__field"><span>Your email</span><input type="email" name="email" required maxlength="200" autocomplete="email" /></label>
+        </div>
+        <label class="msgform__field"><span>Message</span><textarea name="message" required maxlength="5000" rows="5" placeholder="What's on your mind?"></textarea></label>
+        <button type="submit" class="btn btn--primary msgform__submit">Send message</button>
+        <div class="msgform__status" aria-live="polite"></div>
+      </form>
     </div>
     <p class="contact__meta">Manila, Philippines · UTC+8 · Remote-first</p>
   </div>

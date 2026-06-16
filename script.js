@@ -9,14 +9,17 @@
   var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var MOBILE_BP = 760;
 
+  // Apps Script endpoint for the Send-me-a-message form
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxl7hz7vw7VBMhZvG0WVbytSdMyHJQATIKnTFSwwSDlIDn3s591V0kTDhRJ-SeVdwJ1ng/exec';
+
   /* ---------- App registry ---------- */
   var APPS = {
     about:    { title: 'About — Aa Reyes', icon: 'i',  tpl: 'tpl-about',    w: 580, h: 600 },
     projects: { title: 'Projects',         icon: '▤', tpl: 'tpl-projects', w: 860, h: 580 },
     terminal: { title: 'Terminal',         icon: '$', tpl: 'tpl-terminal', w: 640, h: 420 },
-    agents:   { title: 'Agent Crew',       icon: '◇', tpl: 'tpl-agents',   w: 900, h: 620 },
+    agents:   { title: 'Agent Crew',       icon: '◇', tpl: 'tpl-agents',   w: 980, h: 660 },
     stack:    { title: 'Tech Stack',       icon: '▦', tpl: 'tpl-stack',    w: 680, h: 540 },
-    contact:  { title: 'Contact',          icon: '@', tpl: 'tpl-contact',  w: 600, h: 480 },
+    contact:  { title: 'Contact',          icon: '@', tpl: 'tpl-contact',  w: 640, h: 680 },
     game:     { title: 'Glyph Quest',      icon: '✦', tpl: 'tpl-game',     w: 524, h: 446 }
   };
   var PROJECT_IDS = ['aasaas', 'wwe', 'content', 'rarr', 'lcl', 'hscode'];
@@ -220,6 +223,8 @@
       initTerminal(root);
     } else if (id === 'agents') {
       renderCrew(root);
+    } else if (id === 'contact') {
+      initContactForm(root);
     } else if (id === 'game') {
       if (window.GlyphQuest) window.GlyphQuest.mount(root);
     }
@@ -366,69 +371,167 @@
     Sonnet: { color: '#7c8bff', note: 'fast implementation' },
     Haiku:  { color: '#56d98a', note: 'lightweight & quick' }
   };
-  var ORCH = {
-    id: 'orchestrator', name: 'orchestrator', role: 'Coordinator', model: 'Opus',
-    access: 'Delegates only',
-    desc: 'The primary session agent. It reads project context, plans the work, and ' +
-          'delegates every task to the right specialist. By design it coordinates and ' +
-          'reviews — it never writes implementation code directly.'
+  // Per-project crews (tabs at the top of the Agent Crew window)
+  var CREWS = {
+    rarr: {
+      label: 'RARR Platform',
+      lead: 'My employer-platform crew — orchestrator-coordinator pattern, tier-matched models (Opus for reasoning, Sonnet for build, Haiku for docs). <strong>Click any agent.</strong>',
+      orchestrator: {
+        id: 'rarr-orchestrator', name: 'orchestrator', tagline: 'Coordinates & delegates — never implements directly',
+        role: 'Coordinator', model: 'Opus', access: 'Delegates only',
+        desc: 'The primary session agent. Reads project context, plans the work, and delegates every task to the right specialist. By design it coordinates and reviews — it never writes implementation code directly.'
+      },
+      tiers: [
+        { label: 'Implementation', agents: [
+          { id: 'rarr-frontend-dev', name: 'frontend-dev', role: 'UI engineering', model: 'Sonnet', access: 'Read / Write', desc: 'Builds Angular / React components, services, routing and state.' },
+          { id: 'rarr-backend-dev', name: 'backend-dev', role: 'API engineering', model: 'Sonnet', access: 'Read / Write', desc: 'Builds ASP.NET Core controllers, domain services, DTOs and middleware.' },
+          { id: 'rarr-database-dev', name: 'database-dev', role: 'Data layer', model: 'Sonnet', access: 'Read / Write', desc: 'Owns PostgreSQL schema, EF Core / Prisma migrations and query optimization.' },
+          { id: 'rarr-deploy-ops', name: 'deploy-ops', role: 'Deployment', model: 'Sonnet', access: 'Read / Write', desc: 'Handles the Ubuntu VPS, nginx, systemd, CI/CD pipelines and SSL.' },
+          { id: 'rarr-deploy-auditor', name: 'deploy-auditor', role: 'Infra safety', model: 'Sonnet', access: 'Read / Write', desc: 'Runs DevOps audits and deploy-readiness and infrastructure safety checks.' },
+          { id: 'rarr-ui-tester', name: 'ui-tester', role: 'E2E testing', model: 'Sonnet', access: 'Read / Write', desc: 'Drives Playwright end-to-end tests against real user flows.' }
+        ]},
+        { label: 'Planning', agents: [
+          { id: 'rarr-planner', name: 'planner', role: 'Implementation plans', model: 'Opus', access: 'Read-only', desc: 'Produces structured, phased, risk-aware implementation plans before any code.' },
+          { id: 'rarr-architect', name: 'architect', role: 'System design', model: 'Opus', access: 'Read-only', desc: 'Makes system-design decisions, writes ADRs and weighs trade-offs.' }
+        ]},
+        { label: 'Quality', agents: [
+          { id: 'rarr-security-auditor', name: 'security-auditor', role: 'Security review', model: 'Opus', access: 'Read-only', desc: 'Scans for vulnerabilities, detects committed secrets, runs OWASP review. Reports, never edits.' },
+          { id: 'rarr-code-reviewer', name: 'code-reviewer', role: 'Code review', model: 'Sonnet', access: 'Read-only', desc: 'Checks code quality and pattern compliance before merge. Read-only by design.' }
+        ]},
+        { label: 'Utility', agents: [
+          { id: 'rarr-tdd-guide', name: 'tdd-guide', role: 'Test-first flow', model: 'Sonnet', access: 'Read / Write', desc: 'Runs the TDD loop — RED, then GREEN, then REFACTOR.' },
+          { id: 'rarr-build-fixer', name: 'build-fixer', role: 'Build repair', model: 'Sonnet', access: 'Read / Write', desc: 'A fast compile-fix loop that resolves build errors quickly.' },
+          { id: 'rarr-refactor-cleaner', name: 'refactor-cleaner', role: 'Cleanup', model: 'Sonnet', access: 'Read / Write', desc: 'Detects dead code and removes it safely.' },
+          { id: 'rarr-doc-updater', name: 'doc-updater', role: 'Doc sync', model: 'Haiku', access: 'Read / Write', desc: 'Keeps documentation in sync after code changes — runs on Haiku, cheap to call often.' }
+        ]}
+      ]
+    },
+    aasaas: {
+      label: 'Aa-SaaS Studio',
+      lead: 'My vertical-SaaS studio crew — engineering, multi-tenant modules, marketing, business and quality routed through one orchestrator. Domain specialists for PH payroll and dental ops sit alongside platform engineers. <strong>Click any agent.</strong>',
+      orchestrator: {
+        id: 'aas-orchestrator', name: 'orchestrator', tagline: 'Reads the plan, picks the agent, sequences and parallelizes',
+        role: 'Coordinator', model: 'Opus', access: 'Delegates only',
+        desc: "Reads the build plan, decides which Tier-A agent does what, sequences the work, parallelizes where possible. Invoked when a task spans multiple agents or when it isn't obvious which specialist owns it."
+      },
+      tiers: [
+        { label: 'Planning', agents: [
+          { id: 'aas-planner', name: 'planner', role: 'Planning gate', model: 'Opus', access: 'Read-only', desc: 'Planning gate for the Aa Studio platform. Validates a feature request into a locked Karpathy-format brief, then produces the phased implementation plan.' },
+          { id: 'aas-solution-architect', name: 'solution-architect', role: 'Tenant onboarding', model: 'Opus', access: 'Read / Write', desc: 'Ingests discovery interview transcripts and produces draft tenant.yaml configs. Invoked after a kickoff with a prospective or new tenant.' }
+        ]},
+        { label: 'Engineering & Modules', agents: [
+          { id: 'aas-platform-engineer', name: 'platform-engineer', role: 'Platform core', model: 'Sonnet', access: 'Read / Write', desc: 'Owns Layer 1 (platform-core) — tenancy, RLS, JWT, RBAC, audit logging, workflow engine, notification infrastructure.' },
+          { id: 'aas-module-engineer', name: 'module-engineer', role: 'Module dev', model: 'Sonnet', access: 'Read / Write', desc: 'Generic builder for any Layer-2 module. Reads the module template + domain notes, then scaffolds or extends a module.' },
+          { id: 'aas-data-migrator', name: 'data-migrator', role: 'Data ETL', model: 'Sonnet', access: 'Read / Write', desc: 'Schema inference + ETL for messy client data dumps. Invoked during tenant onboarding when bringing existing data into the platform.' },
+          { id: 'aas-devops-deployer', name: 'devops-deployer', role: 'Deploy workflow', model: 'Sonnet', access: 'Read / Write', desc: 'Owns the deploy workflow — GitHub Actions runs tests then SSHes to the VPS on every push to main.' },
+          { id: 'aas-template-maintainer', name: 'template-maintainer', role: 'Template guard', model: 'Sonnet', access: 'Read / Write', desc: 'Reviews every tenant customization request. Decides whether it solves in config, generalizes into the module, or gets declined. Enforces the cardinal rule.' },
+          { id: 'aas-payroll-specialist', name: 'payroll-specialist', role: 'PH payroll expert', model: 'Opus', access: 'Read / Write', desc: 'Domain expert for Philippine payroll — BIR withholding brackets, SSS, PhilHealth, Pag-IBIG, payslip formats, 13th-month rules.' },
+          { id: 'aas-dental-specialist', name: 'dental-specialist', role: 'Dental ops expert', model: 'Opus', access: 'Read / Write', desc: 'Domain expert for Philippine dental clinic operations — patient flows, common procedures, HMO partner dynamics, recall best practices.' },
+          { id: 'aas-tenant-simulator', name: 'tenant-simulator', role: 'UX simulation', model: 'Sonnet', access: 'Read / Write', desc: 'Persona-driven UX simulator. Acts like a Filipino SME owner using the platform, giving client-style feedback. Surfaces "huh?" moments code tests would miss.' }
+        ]},
+        { label: 'Marketing & Business', agents: [
+          { id: 'aas-business-adviser', name: 'business-adviser', role: 'Business strategy', model: 'Opus', access: 'Read / Write', desc: 'Strategic business adviser. Turns shipped product into customer benefits, selling points, positioning, packaging and go-to-market moves.' },
+          { id: 'aas-revenue-strategist', name: 'revenue-strategist', role: 'Pricing & offer', model: 'Sonnet', access: 'Read / Write', desc: 'Owns the canonical product offer — pricing, tiers, feature-to-tier mapping, value props, marketing copy, sales talk-tracks.' },
+          { id: 'aas-ads-strategist', name: 'ads-strategist', role: 'Ad campaigns', model: 'Sonnet', access: 'Read / Write', desc: 'Paid-ads strategist (Meta first). Plans campaign structure, audiences, budgets, objectives and A/B angles targeting PH salon owners.' },
+          { id: 'aas-ads-analyst', name: 'ads-analyst', role: 'Ad performance', model: 'Sonnet', access: 'Read / Write', desc: 'Paid-ads + funnel performance analyst. Reads campaign and analytics data, diagnoses what is working, recommends kill/scale.' },
+          { id: 'aas-creative-producer', name: 'creative-producer', role: 'Creative briefs', model: 'Sonnet', access: 'Read / Write', desc: 'Visual creative for marketing — image and video creative briefs and generation prompts for on-brand social posts and ads.' },
+          { id: 'aas-creative-analyst', name: 'creative-analyst', role: 'Creative testing', model: 'Sonnet', access: 'Read / Write', desc: 'Creative-performance analyst. Judges which creatives/hooks/captions/visuals are working and feeds patterns back to producer.' },
+          { id: 'aas-social-marketer', name: 'social-marketer', role: 'Organic content', model: 'Sonnet', access: 'Read / Write', desc: 'Organic social + content marketer. Plans the content calendar and drafts Facebook/Instagram posts in the brand voice.' },
+          { id: 'aas-onboarding-coach', name: 'onboarding-coach', role: 'User onboarding', model: 'Sonnet', access: 'Read / Write', desc: 'Drafts welcome sequences, training material, in-app tutorials and go-live communication per tenant.' }
+        ]},
+        { label: 'Quality & Docs', agents: [
+          { id: 'aas-verifier', name: 'verifier', role: 'Pre-merge review', model: 'Sonnet', access: 'Read-only', desc: 'Final-check reviewer for code, schemas, migrations and tenant configs before merge or deploy. Enforces the platform contract.' },
+          { id: 'aas-module-tester', name: 'module-tester', role: 'E2E behaviour', model: 'Sonnet', access: 'Read / Write', desc: 'Functional tester for any Layer-2 module. Drives the live GraphQL surface and the running web UI through happy paths and cardinal failures.' },
+          { id: 'aas-module-docs-writer', name: 'module-docs-writer', role: 'User docs', model: 'Sonnet', access: 'Read / Write', desc: "Authors per-module user guides for tenant operators. Tier-aware — every section is labelled with its tier so lower-tier readers see what they're missing." }
+        ]}
+      ]
+    },
+    powerplatform: {
+      label: 'PowerPlatform',
+      lead: 'My Power Automate flow-building crew — strict planning gate, read-only review, scoped-write builder that never deletes. Compact but tightly guard-railed. <strong>Click any agent.</strong>',
+      orchestrator: {
+        id: 'pp-orchestrator', name: 'orchestrator', tagline: 'Reads context, runs the planner gate, delegates',
+        role: 'Coordinator', model: 'Opus', access: 'Delegates',
+        desc: 'Coordinator — reads project context, runs the planner gate, and delegates to specialist agents. Every session acts as the orchestrator by protocol.'
+      },
+      tiers: [
+        { label: 'Planning', agents: [
+          { id: 'pp-planner', name: 'planner', role: 'Planning gate', model: 'Opus', access: 'Read-only', desc: 'Planning gate. Validates a rough request into a locked Karpathy-format brief, then produces the phased implementation plan. The orchestrator routes here BEFORE any flow is created, updated, or toggled.' }
+        ]},
+        { label: 'Flow Build', agents: [
+          { id: 'pp-flow-builder', name: 'flow-builder', role: 'Flow build', model: 'Sonnet', access: 'Scoped Write', desc: 'Builds and edits Power Automate flows and the SharePoint lists they depend on. Scoped-write — creates/updates/validates/tests flows but never deletes.' },
+          { id: 'pp-flow-analyzer', name: 'flow-analyzer', role: 'Flow diagnostics', model: 'Sonnet', access: 'Read-only', desc: 'Read-only diagnostics and discovery for Power Automate flows and their data. Understands existing flows, finds run failures, maps SharePoint/Excel data.' }
+        ]},
+        { label: 'Quality', agents: [
+          { id: 'pp-reviewer', name: 'reviewer', role: 'Brief & flow review', model: 'Sonnet', access: 'Read-only', desc: 'Reviews a locked brief or a flow change for correctness, safety and parity with the reference monolith. Flags issues, never fixes them directly.' }
+        ]},
+        { label: 'Utility', agents: [
+          { id: 'pp-eod-logger', name: 'eod-logger', role: 'End-of-day log', model: 'Sonnet', access: 'Read / Write (append)', desc: "Produces the itemized end-of-day task log in the user's Excel-log format. Read + append only — never deletes." }
+        ]}
+      ]
+    }
   };
-  var TIERS = [
-    { label: 'Implementation', agents: [
-      { id: 'frontend-dev', name: 'frontend-dev', role: 'UI engineering', model: 'Sonnet', access: 'Read / Write', desc: 'Builds Angular / React components, services, routing and state.' },
-      { id: 'backend-dev', name: 'backend-dev', role: 'API engineering', model: 'Sonnet', access: 'Read / Write', desc: 'Builds ASP.NET Core controllers, domain services, DTOs and middleware.' },
-      { id: 'database-dev', name: 'database-dev', role: 'Data layer', model: 'Sonnet', access: 'Read / Write', desc: 'Owns PostgreSQL schema, EF Core / Prisma migrations and query optimization.' },
-      { id: 'deploy-ops', name: 'deploy-ops', role: 'Deployment', model: 'Sonnet', access: 'Read / Write', desc: 'Handles the Ubuntu VPS, nginx, systemd, CI/CD pipelines and SSL.' },
-      { id: 'deploy-auditor', name: 'deploy-auditor', role: 'Infra safety', model: 'Sonnet', access: 'Read / Write', desc: 'Runs DevOps audits and deploy-readiness and infrastructure safety checks.' },
-      { id: 'ui-tester', name: 'ui-tester', role: 'E2E testing', model: 'Sonnet', access: 'Read / Write', desc: 'Drives Playwright end-to-end tests against real user flows.' }
-    ]},
-    { label: 'Planning', agents: [
-      { id: 'planner', name: 'planner', role: 'Implementation plans', model: 'Opus', access: 'Read-only', desc: 'Produces structured, phased, risk-aware implementation plans before any code.' },
-      { id: 'architect', name: 'architect', role: 'System design', model: 'Opus', access: 'Read-only', desc: 'Makes system-design decisions, writes ADRs and weighs trade-offs.' }
-    ]},
-    { label: 'Quality', agents: [
-      { id: 'security-auditor', name: 'security-auditor', role: 'Security review', model: 'Opus', access: 'Read-only', desc: 'Scans for vulnerabilities, detects committed secrets, runs OWASP review. Reports, never edits.' },
-      { id: 'code-reviewer', name: 'code-reviewer', role: 'Code review', model: 'Sonnet', access: 'Read-only', desc: 'Checks code quality and pattern compliance before merge. Read-only by design.' }
-    ]},
-    { label: 'Utility', agents: [
-      { id: 'tdd-guide', name: 'tdd-guide', role: 'Test-first flow', model: 'Sonnet', access: 'Read / Write', desc: 'Runs the TDD loop — RED, then GREEN, then REFACTOR.' },
-      { id: 'build-fixer', name: 'build-fixer', role: 'Build repair', model: 'Sonnet', access: 'Read / Write', desc: 'A fast compile-fix loop that resolves build errors quickly.' },
-      { id: 'refactor-cleaner', name: 'refactor-cleaner', role: 'Cleanup', model: 'Sonnet', access: 'Read / Write', desc: 'Detects dead code and removes it safely.' },
-      { id: 'doc-updater', name: 'doc-updater', role: 'Doc sync', model: 'Haiku', access: 'Read / Write', desc: 'Keeps documentation in sync after code changes — runs on Haiku, cheap to call often.' }
-    ]}
-  ];
 
   function renderCrew(root) {
-    var all = { orchestrator: ORCH };
-    TIERS.forEach(function (t) { t.agents.forEach(function (a) { all[a.id] = a; }); });
-
-    var orchHost = $('.js-orch', root);
-    var tiersHost = $('.js-tiers', root);
-    var detailHost = $('.js-detail', root);
-    if (!orchHost || !tiersHost || !detailHost) return;
-
-    orchHost.innerHTML =
-      '<div class="orch-card agent" data-agent="orchestrator">' +
-        '<div class="agent__name" style="justify-content:center">' +
-          '<span class="agent__dot" style="background:' + MODELS.Opus.color + '"></span>@orchestrator</div>' +
-        '<div class="agent__role">Coordinates &amp; delegates — never implements directly</div>' +
-      '</div>';
-
-    var html = '';
-    TIERS.forEach(function (tier) {
-      html += '<div class="tier"><div class="tier__label">' + tier.label + '</div><div class="tier__col">';
-      tier.agents.forEach(function (a) {
-        html +=
-          '<div class="agent" data-agent="' + a.id + '" tabindex="0" role="button">' +
-            '<div class="agent__name"><span class="agent__dot" style="background:' + MODELS[a.model].color + '"></span>' + a.name + '</div>' +
-            '<div class="agent__role">' + a.role + '</div>' +
-            '<div class="agent__model">' + a.model + '</div>' +
-          '</div>';
+    var tabsHost = root.querySelector('.js-tabs');
+    if (!tabsHost) return;
+    var keys = Object.keys(CREWS);
+    tabsHost.innerHTML = keys.map(function (k) {
+      return '<button class="crew__tab" type="button" data-crew="' + k + '">' + CREWS[k].label + '</button>';
+    }).join('');
+    tabsHost.querySelectorAll('.crew__tab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        renderCrewBody(root, btn.getAttribute('data-crew'));
       });
-      html += '</div></div>';
     });
-    tiersHost.innerHTML = html;
+    renderCrewBody(root, keys[0]);
+  }
 
+  function renderCrewBody(root, crewKey) {
+    var crew = CREWS[crewKey];
+    if (!crew) return;
+
+    root.querySelectorAll('.crew__tab').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-crew') === crewKey);
+    });
+
+    var leadHost = root.querySelector('.js-lead');
+    if (leadHost) leadHost.innerHTML = crew.lead;
+
+    var all = {};
+    all[crew.orchestrator.id] = crew.orchestrator;
+    crew.tiers.forEach(function (t) { t.agents.forEach(function (a) { all[a.id] = a; }); });
+
+    var orchHost = root.querySelector('.js-orch');
+    if (orchHost) {
+      orchHost.innerHTML =
+        '<div class="orch-card agent" data-agent="' + crew.orchestrator.id + '">' +
+          '<div class="agent__name" style="justify-content:center">' +
+            '<span class="agent__dot" style="background:' + MODELS[crew.orchestrator.model].color + '"></span>@' + crew.orchestrator.name + '</div>' +
+          '<div class="agent__role">' + crew.orchestrator.tagline + '</div>' +
+        '</div>';
+    }
+
+    var tiersHost = root.querySelector('.js-tiers');
+    if (tiersHost) {
+      tiersHost.style.gridTemplateColumns = 'repeat(' + crew.tiers.length + ', 1fr)';
+      var html = '';
+      crew.tiers.forEach(function (tier) {
+        html += '<div class="tier"><div class="tier__label">' + tier.label + '</div><div class="tier__col">';
+        tier.agents.forEach(function (a) {
+          html +=
+            '<div class="agent" data-agent="' + a.id + '" tabindex="0" role="button">' +
+              '<div class="agent__name"><span class="agent__dot" style="background:' + MODELS[a.model].color + '"></span>' + a.name + '</div>' +
+              '<div class="agent__role">' + a.role + '</div>' +
+              '<div class="agent__model">' + a.model + '</div>' +
+            '</div>';
+        });
+        html += '</div></div>';
+      });
+      tiersHost.innerHTML = html;
+    }
+
+    var detailHost = root.querySelector('.js-detail');
     function renderDetail(id) {
       var a = all[id]; if (!a) return;
       var m = MODELS[a.model];
@@ -454,7 +557,66 @@
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(id); }
       });
     });
-    select('orchestrator');
+    select(crew.orchestrator.id);
+  }
+
+  /* ============================================================
+     CONTACT FORM (POSTs to Apps Script -> Gmail)
+     ============================================================ */
+  function initContactForm(root) {
+    var form = root.querySelector('.msgform__form');
+    if (!form) return;
+    var status = form.querySelector('.msgform__status');
+    var submitBtn = form.querySelector('.msgform__submit');
+    var origLabel = submitBtn.textContent;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (form.dataset.busy === '1') return;
+
+      var name = (form.elements['name'].value || '').trim();
+      var email = (form.elements['email'].value || '').trim();
+      var message = (form.elements['message'].value || '').trim();
+
+      if (!name || !email || !message) { setStatus(status, 'Please fill all fields.', false); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setStatus(status, 'Please enter a valid email.', false); return; }
+
+      var data = new URLSearchParams();
+      data.append('name', name);
+      data.append('email', email);
+      data.append('message', message);
+      data.append('_hp', form.elements['_hp'].value || '');
+
+      form.dataset.busy = '1';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending…';
+      setStatus(status, '', null);
+
+      fetch(APPS_SCRIPT_URL, { method: 'POST', body: data })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j && j.success) {
+            form.reset();
+            setStatus(status, "Thanks — your message landed in my inbox. I'll reply soon.", true);
+          } else {
+            throw new Error((j && j.error) || 'Send failed');
+          }
+        })
+        .catch(function () {
+          setStatus(status, 'Send failed. Email aajreyes1996@gmail.com directly?', false);
+        })
+        .then(function () {
+          form.dataset.busy = '';
+          submitBtn.disabled = false;
+          submitBtn.textContent = origLabel;
+        });
+    });
+  }
+
+  function setStatus(el, msg, ok) {
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'msgform__status' + (ok === true ? ' msgform__status--ok' : ok === false ? ' msgform__status--err' : '');
   }
 
   /* ============================================================
@@ -532,6 +694,7 @@
     }
     startClock();
     wireLaunchers();
+    openApp('contact');  // open first so About ends up focused on top
     openApp('about');
     setTimeout(hideTip, 9000);
   }
